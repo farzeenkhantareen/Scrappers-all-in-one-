@@ -1,0 +1,59 @@
+# FastAPI & Core
+fastapi==0.111.0
+uvicorn[standard]==0.29.0
+python-dotenv==1.0.1
+pydantic==2.7.1
+pydantic-settings==2.2.1
+
+# Database
+sqlalchemy==2.0.30
+alembic==1.13.1
+aiosqlite==0.20.0
+asyncpg==0.29.0
+
+# Celery & Redis
+celery==5.4.0
+redis==5.0.4
+kombu==5.3.7
+flower==2.0.1
+
+# Scraping
+playwright==1.44.0
+beautifulsoup4==4.12.3
+lxml==5.2.2
+requests==2.32.2
+httpx==0.27.0
+fake-useragent==1.5.1
+tldextract==5.1.2
+urllib3==2.2.1
+
+# Parsing & Extraction
+extruct==0.18.0
+phonenumbers==8.13.37
+validators==0.28.1
+python-whois==0.9.4
+
+# Export
+openpyxl==3.1.2
+reportlab==4.1.0
+python-docx==1.1.2
+xlsxwriter==3.2.0
+
+# WebSocket & Real-time
+websockets==12.0
+python-socketio==5.11.2
+
+# Security & Utils
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+python-multipart==0.0.9
+slowapi==0.1.9
+tenacity==8.3.0
+
+# Logging
+structlog==24.1.0
+
+# Testing
+pytest==8.2.0
+pytest-asyncio==0.23.7
+httpx==0.27.0
