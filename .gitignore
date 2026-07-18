@@ -1,0 +1,39 @@
+# Python files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+scrappers.db
+backend/scrappers.db
+backend/app/scrappers.db
+backend/exports/
+backend/media/
+
+# Next.js / Node
+node_modules/
+frontend/node_modules/
+.next/
+frontend/.next/
+out/
+frontend/out/
+
+# Environments
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+backend/.env
+frontend/.env.local
+
+# Operating System
+.DS_Store
+Thumbs.db
+
+# TypeScript
+*.tsbuildinfo
+frontend/next-env.d.ts
+
+# Temporary Backup
+.git_temp_backup/
