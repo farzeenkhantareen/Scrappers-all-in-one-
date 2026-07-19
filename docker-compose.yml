@@ -1,0 +1,121 @@
+version: "3.9"
+
+services:
+  # ── Redis (message broker + pub/sub) ─────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: scrappers_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --maxmemory 256mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── PostgreSQL (production database) ─────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: scrappers_postgres
+    environment:
+      POSTGRES_DB: scrappers
+      POSTGRES_USER: scrappers
+      POSTGRES_PASSWORD: scrappers_secret
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U scrappers"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── FastAPI Backend ───────────────────────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: scrappers_backend
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://scrappers:scrappers_secret@postgres:5432/scrappers
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/1
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      - media_data:/app/media
+      - export_data:/app/exports
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  # ── Celery Worker ─────────────────────────────────────────────────────────────
+  celery_worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: scrappers_celery
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://scrappers:scrappers_secret@postgres:5432/scrappers
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/1
+    volumes:
+      - ./backend:/app
+      - media_data:/app/media
+      - export_data:/app/exports
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    command: >
+      celery -A app.celery_app worker
+      --loglevel=info
+      --queues=general,website,maps,social
+      --concurrency=2
+
+  # ── Celery Flower (monitoring) ────────────────────────────────────────────────
+  flower:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: scrappers_flower
+    environment:
+      CELERY_BROKER_URL: redis://redis:6379/0
+    ports:
+      - "5555:5555"
+    depends_on:
+      - redis
+    command: celery -A app.celery_app flower --port=5555
+
+  # ── Next.js Frontend ──────────────────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: scrappers_frontend
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    command: npm run dev
+
+volumes:
+  redis_data:
+  postgres_data:
+  media_data:
+  export_data:
