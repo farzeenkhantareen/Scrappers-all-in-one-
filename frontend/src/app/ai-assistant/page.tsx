@@ -87,8 +87,9 @@ export default function AIAssistantPage() {
 
         // If place info was returned, load it
         if (data.scraped_place) {
-          setPlace(data.scraped_place as ScrapedPlace);
-          addToast(`Scraped place loaded: ${data.scraped_place.name}`, "success");
+          const place = data.scraped_place as unknown as ScrapedPlace;
+          setPlace(place);
+          addToast(`Scraped place loaded: ${place.name}`, "success");
         }
 
         // If a scraper job was run, set jobId
