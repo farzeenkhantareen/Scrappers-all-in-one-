@@ -1,4 +1,4 @@
-# OmniScrape Suite (Scrappers All-in-One)
+# (Scrappers All-in-One)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.111.0-green.svg)](https://fastapi.tiangolo.com)
