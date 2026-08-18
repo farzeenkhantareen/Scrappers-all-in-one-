@@ -25,6 +25,7 @@ interface UseJobWebSocketReturn {
 
 export function useJobWebSocket(jobId: string | null): UseJobWebSocketReturn {
   const wsRef = useRef<WebSocket | null>(null);
+  const connectRef = useRef<() => void>(() => {});
   const [progress, setProgress] = useState<JobProgress | null>(null);
   const [status, setStatus] = useState<JobStatus | null>(null);
   const [logs, setLogs] = useState<LogEntry[]>([]);
@@ -45,7 +46,7 @@ export function useJobWebSocket(jobId: string | null): UseJobWebSocketReturn {
       // Reconnect after 3s unless job is complete
       setTimeout(() => {
         if (wsRef.current?.readyState === WebSocket.CLOSED) {
-          connect();
+          connectRef.current();
         }
       }, 3000);
     };
@@ -80,6 +81,7 @@ export function useJobWebSocket(jobId: string | null): UseJobWebSocketReturn {
   }, [jobId]);
 
   useEffect(() => {
+    connectRef.current = connect;
     connect();
     return () => {
       wsRef.current?.close();

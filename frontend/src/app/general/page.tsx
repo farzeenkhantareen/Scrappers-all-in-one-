@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
+
 import { Zap, Globe, MapPin, ChevronRight, AlertCircle } from "lucide-react";
 import { InstagramIcon, FacebookIcon, LinkedinIcon } from "@/components/icons/BrandIcons";
 import { scrapeApi, jobsApi } from "@/lib/api";

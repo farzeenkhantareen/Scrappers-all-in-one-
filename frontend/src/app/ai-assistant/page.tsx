@@ -3,11 +3,11 @@
 import { useState, useRef, useEffect } from "react";
 import { 
   Bot, Send, User, Sparkles, MapPin, Star, Globe, 
-  Phone, Download, Calendar, ArrowRight, Loader2, Trash2
+  Phone, Download, Loader2, Trash2
 } from "lucide-react";
 import { aiApi, exportsApi } from "@/lib/api";
+import type { ExportFormat } from "@/types";
 import { useToast } from "@/components/Providers";
-import { motion, AnimatePresence } from "framer-motion";
 
 interface ChatMessage {
   sender: "user" | "bot";
@@ -103,8 +103,9 @@ export default function AIAssistantPage() {
           timestamp: new Date()
         }]);
       }
-    } catch (err: any) {
-      const errorMsg = err.response?.data?.detail || "Backend server unreachable.";
+    } catch (err) {
+      const error = err as { response?: { data?: { detail?: string } } };
+      const errorMsg = error.response?.data?.detail || "Backend server unreachable.";
       addToast(errorMsg, "error");
       setMessages(prev => [...prev, {
         sender: "bot",
@@ -124,7 +125,7 @@ export default function AIAssistantPage() {
     }
     try {
       addToast(`Generating ${format.toUpperCase()} export...`, "info");
-      const res = await exportsApi.create(jobId, format as any);
+      const res = await exportsApi.create(jobId, format as ExportFormat);
       if (res.success && res.data) {
         addToast("Export generated successfully!", "success");
         // Open download url
@@ -455,7 +456,7 @@ export default function AIAssistantPage() {
               </div>
               <div style={{ fontWeight: 600, fontSize: 14, color: "var(--text-secondary)", marginBottom: 6 }}>No reviews loaded yet</div>
               <p style={{ fontSize: 12, color: "var(--text-muted)", lineHeight: 1.4 }}>
-                Enter the name of a business (e.g. "Sofa Gold Mall") in the chat to start scraping reviews.
+                Enter the name of a business (e.g. &quot;Sofa Gold Mall&quot;) in the chat to start scraping reviews.
               </p>
             </div>
           )}

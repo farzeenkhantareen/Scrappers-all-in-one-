@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Download, FileJson, FileSpreadsheet, FileText, Archive, FileCode, File, Trash2, Tag } from "lucide-react";
 import { exportsApi, jobsApi } from "@/lib/api";
 import { useToast } from "@/components/Providers";
@@ -27,7 +27,7 @@ export default function ExportsPage() {
   const [selectedFormat, setSelectedFormat] = useState<ExportFormat>("json");
   const [customName, setCustomName] = useState("");
   const { addToast } = useToast();
-  const queryClient = useQueryClient();
+
 
   const { data: exportFiles, refetch } = useQuery({
     queryKey: ["exports"],

@@ -125,7 +125,7 @@ export interface AIChatRequest {
 export interface AIChatResponse {
   reply: string;
   session_id: string;
-  scraped_place?: Record<string, any>;
+  scraped_place?: Record<string, unknown>;
   job_id?: string;
 }
 

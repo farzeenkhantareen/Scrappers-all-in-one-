@@ -1,11 +1,9 @@
 "use client";
 
-import { useState, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Play, Pause, X, ExternalLink, Clock, Layers, FileText, Wifi, Trash2 } from "lucide-react";
+import { motion } from "framer-motion";
+import { Pause, X, ExternalLink, Clock, Layers, FileText, Wifi, Trash2 } from "lucide-react";
 import { useJobWebSocket } from "@/hooks/useJobWebSocket";
-import type { Job, LogEntry, JobStatus } from "@/types";
-import { formatDistanceToNow } from "date-fns";
+import type { Job, JobStatus } from "@/types";
 
 // ── Progress tracker ──────────────────────────────────────────────────────────
 interface JobTrackerProps {
